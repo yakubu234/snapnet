@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
+
     public function register(Request $request)
     {
         $request->validate([
@@ -22,7 +25,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['token' => $user->createToken('API Token')->plainTextToken]);
+        return $this->success(['token' => $user->createToken('API Token')->plainTextToken], 'Registration Successful', 201);
     }
 
     public function login(Request $request)
@@ -35,15 +38,15 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
+            return $this->error('Invalid credentials', 401, ['error' => 'Invalid credentials']);
         }
 
-        return response()->json(['token' => $user->createToken('API Token')->plainTextToken]);
+        return $this->success(['token' => $user->createToken('API Token')->plainTextToken], 'Login Successful', 200);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logged out successfully']);
+        return $this->success(['message' => 'Logged out successfully'], 'Logged out successfully');
     }
 }

@@ -85,7 +85,12 @@ The application will be accessible at `http://localhost:8000`.
 
 ---
 
+## Postman collection
+Postman documentation [https://documenter.getpostman.com/view/12538701/2sAYQakBG4](https://documenter.getpostman.com/view/12538701/2sAYQakBG4).<br/><br/>
+
+---
 ## API Endpoints
+
 
 ### Authentication
 - **Register**: `POST /api/register`

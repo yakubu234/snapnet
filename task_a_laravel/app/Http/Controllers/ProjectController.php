@@ -6,11 +6,13 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Employee;
 use App\Models\Project;
+use App\Traits\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
@@ -41,12 +43,11 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         try {
-
             $project = Project::create($request->validated());
-            return response()->json($project, 201);
+            return $this->success($project, 'Project added successfully', 201);
 
         }catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
+            return $this->error('Not found', 404, ['error' => $e->getMessage()]);
         }
     }
 
@@ -55,7 +56,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return response()->json($project->load('employees'));
+        return $this->success($project->load('employees'));
     }
 
     /**
@@ -65,9 +66,9 @@ class ProjectController extends Controller
     {
         try{
             $project->update($request->validated());
-            return response()->json($project);
+            return $this->success($project, 'Updated Successfully', 201);
         }catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
+            return $this->error('Not found', 404, ['error' => $e->getMessage()]);
         }
     }
 
@@ -77,16 +78,16 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-        return response()->json(null, 204);
+        return $this->success(null,'Deleted Successfully', 204);
     }
 
     public function dashboard()
     {
-        return response()->json([
+        return $this->success([
             'total_projects' => Project::count(),
             'total_employees' => Employee::count(),
             'projects_by_status' => Project::groupBy('status')->selectRaw('status, COUNT(*) as count')->get(),
             'projects' => Project::with('employees')->get(),
-        ]);
+        ], 'all projects');
     }
 }

@@ -41,6 +41,8 @@ cp .env.example .env
     DB_DATABASE=your_database_name
     DB_USERNAME=your_database_user
     DB_PASSWORD=your_database_password
+    QUEUE_CONNECTION=database / redis
+
     ```
   - **Mail Configuration** (for email notifications):
     ```env
@@ -73,6 +75,11 @@ php artisan db:seed
 ### 7. Start the Development Server
 ```bash
 php artisan serve
+```
+
+### 8. Start the queue worker
+```bash
+php artisan queue:work
 ```
 The application will be accessible at `http://localhost:8000`.
 

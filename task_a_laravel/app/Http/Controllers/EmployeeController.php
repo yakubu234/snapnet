@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use App\Jobs\SendWelcomeEmail;
 use App\Models\Employee;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -18,6 +19,9 @@ class EmployeeController extends Controller
     public function store(StoreEmployeeRequest $request, Project $project)
     {
         $employee = $project->employees()->create($request->validated());
+        // send a welcome email.
+        SendWelcomeEmail::dispatch($employee);
+        
         return response()->json($employee, 201);
     }
 

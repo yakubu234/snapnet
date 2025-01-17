@@ -1,0 +1,4 @@
+./task_a_laravel/vendor
+./task_b_laravel/vendor
+./task_b_laravel/.env
+./task_a_laravel/.env
